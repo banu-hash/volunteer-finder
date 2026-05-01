@@ -1,0 +1,126 @@
+// Version: 1.0.0
+type ActivityLog__812009276 =
+  {
+    action : Text;
+    details : Text;
+    id : Nat;
+    timestamp : Timestamp__301639476;
+    userId : UserId__158757552
+  };
+type Data__791452850<K, V> =
+  {var count : Nat__490723111; kvs : [var ?(K, V)]};
+type ExternalBlob__671167343 = Blob;
+type Internal__8484328<K, V> =
+  {children : [var ?Node__46230540<K, V>]; data : Data__791452850<K, V>};
+type Leaf__809889148<K, V> = {data : Data__791452850<K, V>};
+type Location__847735819 = {displayName : Text; lat : Float; lng : Float};
+type Map__158565046<K, V> = Map__297112838<K, V>;
+type Map__297112838<K, V> =
+  {var root : Node__46230540<K, V>; var size : Nat__490723111};
+type Map__605269027<K, V> = Map__158565046<K, V>;
+type NGOProfile__497271575 =
+  {
+    var contactEmail : Text;
+    createdAt : Timestamp__301639476;
+    var description : Text;
+    id : UserId__158757552;
+    var isActive : Bool;
+    var name : Text;
+    var status : NGOStatus__954329260;
+    var updatedAt : Timestamp__301639476;
+    var website : Text
+  };
+type NGOStatus__954329260 = {#approved; #pending; #rejected};
+type Nat__490723111 = Nat__920180692;
+type Nat__920180692 = Nat;
+type Node__46230540<K, V> =
+  {#internal : Internal__8484328<K, V>; #leaf : Leaf__809889148<K, V>};
+type NotificationId__307495059 = Nat;
+type NotificationType__338939744 =
+  {#acceptance; #assignment; #completion; #rejection; #reminder};
+type Notification__766161334 =
+  {
+    createdAt : Timestamp__301639476;
+    id : NotificationId__307495059;
+    var message : Text;
+    notificationType : NotificationType__338939744;
+    var read : Bool;
+    userId : UserId__158757552
+  };
+type TaskId__207642484 = Nat;
+type TaskPriority__430185635 = {#normal; #urgent};
+type TaskStatus__537038292 =
+  {#accepted; #completed; #pending; #rejected; #verified};
+type Task__218109324 =
+  {
+    var assignedVolunteer : ?UserId__158757552;
+    createdAt : Timestamp__301639476;
+    createdByNGO : UserId__158757552;
+    var deadline : Timestamp__301639476;
+    var description : Text;
+    id : TaskId__207642484;
+    var location : ?Location__847735819;
+    var priority : TaskPriority__430185635;
+    var proofUrls : [ExternalBlob__671167343];
+    var requiredSkills : [Text];
+    var status : TaskStatus__537038292;
+    var title : Text;
+    var updatedAt : Timestamp__301639476
+  };
+type Timestamp__301639476 = Int;
+type UserId__158757552 = Principal;
+type UserRole__1073662873 = {#admin; #guest; #user};
+type VolunteerProfile__393423785 =
+  {
+    var availability : Text;
+    var bio : Text;
+    createdAt : Timestamp__301639476;
+    id : UserId__158757552;
+    var isActive : Bool;
+    var location : ?Location__847735819;
+    var name : Text;
+    var profilePhoto : ?ExternalBlob__671167343;
+    var rating : Float;
+    var ratingCount : Nat;
+    var skills : [Text];
+    var totalTasksCompleted : Nat;
+    var updatedAt : Timestamp__301639476
+  };
+actor {
+  stable accessControlState :
+    {
+      var adminAssigned : Bool;
+      userRoles : Map__605269027<Principal, UserRole__1073662873>
+    };
+  stable activityLog :
+    {
+      var blockIndex : Nat__490723111;
+      var blocks : [var [var ?ActivityLog__812009276]];
+      var elementIndex : Nat__490723111
+    };
+  stable logIdCounter : {var value : Nat};
+  stable ngoProfiles :
+    {
+      var root : Node__46230540<UserId__158757552, NGOProfile__497271575>;
+      var size : Nat__490723111
+    };
+  stable notificationIdCounter : {var value : Nat};
+  stable notifications :
+    {
+      var root :
+        Node__46230540<NotificationId__307495059, Notification__766161334>;
+      var size : Nat__490723111
+    };
+  stable taskIdCounter : {var value : Nat};
+  stable tasks :
+    {
+      var root : Node__46230540<TaskId__207642484, Task__218109324>;
+      var size : Nat__490723111
+    };
+  stable volunteerProfiles :
+    {
+      var root :
+        Node__46230540<UserId__158757552, VolunteerProfile__393423785>;
+      var size : Nat__490723111
+    }
+};

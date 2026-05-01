@@ -1,0 +1,223 @@
+type _ImmutableObjectStorageRefillResult = 
+ record {
+   success: opt bool;
+   topped_up_amount: opt nat;
+ };
+type _ImmutableObjectStorageRefillInformation = record {
+                                                  proposed_top_up_amount:
+                                                   opt nat;};
+type _ImmutableObjectStorageCreateCertificateResult = 
+ record {
+   blob_hash: text;
+   method: text;
+ };
+type VolunteerWithScore = 
+ record {
+   matchScore: float64;
+   profile: VolunteerProfilePublic;
+ };
+type VolunteerProfilePublic = 
+ record {
+   availability: text;
+   bio: text;
+   createdAt: Timestamp;
+   id: UserId;
+   isActive: bool;
+   location: opt Location;
+   name: text;
+   profilePhoto: opt ExternalBlob;
+   rating: float64;
+   ratingCount: nat;
+   skills: vec text;
+   totalTasksCompleted: nat;
+   updatedAt: Timestamp;
+ };
+type VolunteerProfileInput = 
+ record {
+   availability: text;
+   bio: text;
+   location: opt Location;
+   name: text;
+   profilePhoto: opt ExternalBlob;
+   skills: vec text;
+ };
+type UserRole__1 = 
+ variant {
+   ngo;
+   superAdmin;
+   volunteer;
+ };
+type UserRole = 
+ variant {
+   admin;
+   guest;
+   user;
+ };
+type UserId = principal;
+type Timestamp = int;
+type TaskWithScore = 
+ record {
+   matchScore: float64;
+   task: TaskPublic;
+ };
+type TaskStatus = 
+ variant {
+   accepted;
+   completed;
+   pending;
+   rejected;
+   verified;
+ };
+type TaskPublic = 
+ record {
+   assignedVolunteer: opt UserId;
+   createdAt: Timestamp;
+   createdByNGO: UserId;
+   deadline: Timestamp;
+   description: text;
+   id: TaskId;
+   location: opt Location;
+   priority: TaskPriority;
+   proofUrls: vec ExternalBlob;
+   requiredSkills: vec text;
+   status: TaskStatus;
+   title: text;
+   updatedAt: Timestamp;
+ };
+type TaskPriority = 
+ variant {
+   normal;
+   urgent;
+ };
+type TaskInput = 
+ record {
+   deadline: Timestamp;
+   description: text;
+   location: opt Location;
+   priority: TaskPriority;
+   requiredSkills: vec text;
+   title: text;
+ };
+type TaskId = nat;
+type PlatformStats = 
+ record {
+   completedTasks: nat;
+   completionRate: float64;
+   pendingNGOs: nat;
+   totalNGOs: nat;
+   totalTasks: nat;
+   totalVolunteers: nat;
+   verifiedTasks: nat;
+ };
+type NotificationType = 
+ variant {
+   acceptance;
+   assignment;
+   completion;
+   rejection;
+   reminder;
+ };
+type NotificationPublic = 
+ record {
+   createdAt: Timestamp;
+   id: NotificationId;
+   message: text;
+   notificationType: NotificationType;
+   read: bool;
+   userId: UserId;
+ };
+type NotificationId = nat;
+type NGOStatus = 
+ variant {
+   approved;
+   pending;
+   rejected;
+ };
+type NGOProfilePublic = 
+ record {
+   contactEmail: text;
+   createdAt: Timestamp;
+   description: text;
+   id: UserId;
+   isActive: bool;
+   name: text;
+   status: NGOStatus;
+   updatedAt: Timestamp;
+   website: text;
+ };
+type NGOProfileInput = 
+ record {
+   contactEmail: text;
+   description: text;
+   name: text;
+   website: text;
+ };
+type Location = 
+ record {
+   displayName: text;
+   lat: float64;
+   lng: float64;
+ };
+type ExternalBlob = blob;
+type ActivityLog = 
+ record {
+   action: text;
+   details: text;
+   id: nat;
+   timestamp: Timestamp;
+   userId: UserId;
+ };
+service : {
+  _immutableObjectStorageBlobsAreLive: (hashes: vec blob) -> (vec bool) query;
+  _immutableObjectStorageBlobsToDelete: () -> (vec blob) query;
+  _immutableObjectStorageConfirmBlobDeletion: (blobs: vec blob) -> ();
+  _immutableObjectStorageCreateCertificate: (blobHash: text) ->
+   (_ImmutableObjectStorageCreateCertificateResult);
+  _immutableObjectStorageRefillCashier: (refillInformation:
+   opt _ImmutableObjectStorageRefillInformation) ->
+   (_ImmutableObjectStorageRefillResult);
+  _immutableObjectStorageUpdateGatewayPrincipals: () -> ();
+  _initializeAccessControl: () -> ();
+  acceptTask: (taskId: TaskId) -> (bool);
+  approveNGO: (userId: UserId, approve: bool) -> (bool);
+  assignCallerUserRole: (user: principal, role: UserRole) -> ();
+  assignUserRole: (userId: UserId, role: UserRole__1) -> ();
+  assignVolunteer: (taskId: TaskId, volunteerId: UserId) -> (bool);
+  createTask: (input: TaskInput) -> (TaskId);
+  deactivateNGO: (userId: UserId) -> ();
+  deactivateVolunteer: (userId: UserId) -> ();
+  deleteTask: (taskId: TaskId) -> (bool);
+  filterVolunteersBySkills: (skills: vec text) ->
+   (vec VolunteerProfilePublic) query;
+  getActivityLog: () -> (vec ActivityLog) query;
+  getCallerUserRole: () -> (UserRole) query;
+  getMatchScore: (volunteerId: UserId, taskId: TaskId) -> (float64) query;
+  getMyNGOProfile: () -> (opt NGOProfilePublic) query;
+  getMyNotifications: () -> (vec NotificationPublic) query;
+  getMyRecommendedTasks: (limit: nat) -> (vec TaskWithScore) query;
+  getMyVolunteerProfile: () -> (opt VolunteerProfilePublic) query;
+  getNGOProfile: (userId: UserId) -> (opt NGOProfilePublic) query;
+  getPlatformStats: () -> (PlatformStats) query;
+  getRecommendedTasks: (volunteerId: UserId, limit: nat) ->
+   (vec TaskWithScore) query;
+  getTask: (taskId: TaskId) -> (opt TaskPublic) query;
+  getTopVolunteers: (taskId: TaskId, limit: nat) ->
+   (vec VolunteerWithScore) query;
+  getVolunteerProfile: (userId: UserId) -> (opt VolunteerProfilePublic) query;
+  isCallerAdmin: () -> (bool) query;
+  listAllTasks: () -> (vec TaskPublic) query;
+  listMyNGOTasks: () -> (vec TaskPublic) query;
+  listMyVolunteerTasks: () -> (vec TaskPublic) query;
+  listNGOs: () -> (vec NGOProfilePublic) query;
+  listPendingNGOs: () -> (vec NGOProfilePublic) query;
+  listVolunteers: () -> (vec VolunteerProfilePublic) query;
+  markAllNotificationsRead: () -> ();
+  markNotificationRead: (notificationId: NotificationId) -> (bool);
+  markTaskCompleted: (taskId: TaskId, proofs: vec ExternalBlob) -> (bool);
+  registerNGO: (input: NGOProfileInput) -> ();
+  rejectTask: (taskId: TaskId) -> (bool);
+  saveMyVolunteerProfile: (input: VolunteerProfileInput) -> ();
+  updateMyNGOProfile: (input: NGOProfileInput) -> ();
+  updateTask: (taskId: TaskId, input: TaskInput) -> (bool);
+  verifyTask: (taskId: TaskId, approved: bool) -> (bool);
+}

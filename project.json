@@ -1,0 +1,26 @@
+{
+  "overview": "A full-stack platform connecting NGOs with volunteers, featuring AI-powered skill and location-based task matching, role-based dashboards for volunteers, NGOs, and admins, proof upload for task verification, an interactive map, and real-time notifications.",
+  "features": [
+    "Role-based authentication for Volunteers, NGO Admins, and Super Admins",
+    "AI-powered volunteer-task matching with visible Match Score %",
+    "Interactive Leaflet.js map with task pins and distance/skill filters",
+    "NGO task creation with AI-suggested volunteer assignments",
+    "Proof upload system for task completion verification",
+    "Volunteer dashboard with assigned, recommended, and completed tasks",
+    "Admin panel for NGO approvals, user management, and platform analytics",
+    "Dark/light mode with responsive mobile-first design",
+    "Sample data pre-loaded for all roles"
+  ],
+  "category": "productivity",
+  "tags": [
+    "volunteer",
+    "ngo",
+    "ai-matching",
+    "task-management",
+    "map",
+    "nonprofit",
+    "community",
+    "platform"
+  ],
+  "last_updated": "2026-05-01T17:57:17.309Z"
+}
